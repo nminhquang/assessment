@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather
+  namespace: application
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 2
+  selector:
+    matchLabels:
+      app: weather
+  template:
+    metadata:
+      labels:
+        app: weather
+    spec:
+      #Security Context
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000
+
+      containers:
+        - name: weather
+          image: <ECR repository>
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: weather-configmap
+            - secretRef:
+                name: weather-secret
+          env:
+            - name: ENVIRONMENT
+              value: <ENVIRONMENT name>
+          ports:
+            - name: http
+              protocol: TCP
+              containerPort: 8080
+          resources:
+            requests:
+              memory: '120Mi'
+              cpu: '10m'
+            limits:
+              memory: '1Gi'
+              cpu: '500m'
+          startupProbe:
+            httpGet:
+              path: /
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 18 # 18 * 10sec = 180seconds (3min) startup time
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 0 # After startup probe this can start immediately
+            periodSeconds: 5
+            timeoutSeconds: 10
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15 # Can start independent from liveness and startup probe
+            periodSeconds: 5
+            timeoutSeconds: 10
+            failureThreshold: 5
+            successThreshold: 2
