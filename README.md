@@ -1,6 +1,6 @@
 # Sample project(weather API)
 Application Architect
-![application architect](./diagram.png)
+![application architect](./diagram.PNG)
 
 - AWS API gateway with Lambda authorizer (Google Oauth2), integrate with EKS service
 - AWS EKS to host backend service
