@@ -17,10 +17,10 @@ resource "aws_apigatewayv2_authorizer" "this" {
   authorizer_type  = "REQUEST"
   authorizer_uri   = module.lambda_authorizer.lambda_function_invoke_arn
   identity_sources = ["$request.header.Authorization"]
-  name            = "google-oauth"
-  
+  name             = "google-oauth"
+
   authorizer_payload_format_version = "2.0"
-  enable_simple_responses          = true
+  enable_simple_responses           = true
 }
 
 resource "aws_apigatewayv2_integration" "this" {
@@ -28,10 +28,10 @@ resource "aws_apigatewayv2_integration" "this" {
   integration_type   = "HTTP_PROXY"
   integration_method = "ANY"
   integration_uri    = aws_lb_listener.alb_http_listener.arn
-  
+
   connection_type = "VPC_LINK"
   connection_id   = aws_apigatewayv2_vpc_link.this.id
-  
+
   request_parameters = {
     "overwrite:path" = "$request.path"
   }
@@ -41,11 +41,11 @@ resource "aws_apigatewayv2_integration" "this" {
 resource "aws_apigatewayv2_route" "this" {
   api_id    = aws_apigatewayv2_api.this.id
   route_key = "ANY /{proxy+}"
-  
+
   target = "integrations/${aws_apigatewayv2_integration.this.id}"
-  
+
   authorization_type = "CUSTOM"
-  authorizer_id     = aws_apigatewayv2_authorizer.this.id
+  authorizer_id      = aws_apigatewayv2_authorizer.this.id
 }
 
 # Stage
@@ -58,16 +58,16 @@ resource "aws_apigatewayv2_stage" "this" {
     destination_arn = aws_cloudwatch_log_group.api_logs.arn
     format = jsonencode({
       requestId      = "$context.requestId"
-      ip            = "$context.identity.sourceIp"
-      requestTime   = "$context.requestTime"
-      httpMethod    = "$context.httpMethod"
-      routeKey      = "$context.routeKey"
-      status        = "$context.status"
-      protocol      = "$context.protocol"
+      ip             = "$context.identity.sourceIp"
+      requestTime    = "$context.requestTime"
+      httpMethod     = "$context.httpMethod"
+      routeKey       = "$context.routeKey"
+      status         = "$context.status"
+      protocol       = "$context.protocol"
       responseLength = "$context.responseLength"
-      path          = "$context.path"
-      authorizer    = "$context.authorizer.error"
-      error         = "$context.error.message"
+      path           = "$context.path"
+      authorizer     = "$context.authorizer.error"
+      error          = "$context.error.message"
     })
   }
 }

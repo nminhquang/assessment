@@ -6,9 +6,9 @@
 
 terraform {
   backend "s3" {
-    bucket         = "weather-tfstate"
-    key            = "dev/terraform.tfstate"
-    region         = "ap-southeast-1"
-    encrypt        = true
+    bucket  = "weather-tfstate"
+    key     = "dev/terraform.tfstate"
+    region  = "ap-southeast-1"
+    encrypt = true
   }
 }

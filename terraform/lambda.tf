@@ -10,7 +10,7 @@ module "lambda_authorizer" {
   publish       = true
   timeout       = 900
 
- kms_key_arn = aws_kms_key.this.arn
+  kms_key_arn = aws_kms_key.this.arn
   source_path = "${path.module}/lambdasource"
 
   attach_policy_json = true

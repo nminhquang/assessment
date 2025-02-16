@@ -2,7 +2,7 @@ module "eks_managed_node" {
   source  = "terraform-aws-modules/eks/aws"
   version = "20.33.0"
 
-  cluster_name    = "${local.name_prefix}"
+  cluster_name    = local.name_prefix
   cluster_version = var.eks_version
 
   # EKS Addons
@@ -17,7 +17,7 @@ module "eks_managed_node" {
   subnet_ids = module.network.application_subnet_ids
   cluster_encryption_config = {
     provider_key_arn = aws_kms_key.this.arn
-    resources = ["secrets"]
+    resources        = ["secrets"]
   }
   eks_managed_node_groups = {
     small = {

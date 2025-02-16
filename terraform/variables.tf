@@ -19,18 +19,18 @@ variable "tags" {
 }
 
 variable "eks_version" {
-  type = string
+  type        = string
   description = "EKS version"
-  
+
 }
 
 variable "cluster_endpoint_public_access" {
   description = "Public access for eks cluster"
-  type = bool
-  default = false  
+  type        = bool
+  default     = false
 }
 
 variable "google_client_id" {
   description = "Google client ID for lambda authorizer"
-  type = string  
+  type        = string
 }
